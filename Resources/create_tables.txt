@@ -1,0 +1,63 @@
+make available account and transaction table schema
+insert data
+-----------------------------------------------------
+Table Setup
+CREATE TABLE IF NOT EXISTS public.account
+(
+    id serial NOT NULL,
+    name character varying(150) COLLATE pg_catalog."default" NOT NULL,
+    type character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    "number" character varying(30) COLLATE pg_catalog."default" NOT NULL,
+    address text COLLATE pg_catalog."default",
+    CONSTRAINT account_pkey PRIMARY KEY (id),
+    CONSTRAINT account_number_key UNIQUE ("number")
+)
+-----------------------------------------------------------
+INSERT INTO public.account (name, type, "number", address)
+VALUES
+('Adebayo Olumide', 'Savings', '0123456789', 'Lagos, Nigeria'),
+('James Wilson', 'Current', '0123456790', 'Abuja, Nigeria'),
+('Ibrahim Musa', 'Savings', '0123456791', 'Kano, Nigeria'),
+('Ngozi Eze', 'Current', '0123456792', 'Enugu, Nigeria'),
+('Sarah Williams', 'Savings', '0123456793', 'Ibadan, Nigeria');
+
+
+--------------------------------------------
+
+-----------------------------------------
+CREATE TABLE IF NOT EXISTS public.transaction
+(
+    id serial NOT NULL,
+    account_id integer NOT NULL,
+    date date NOT NULL,
+    description text COLLATE pg_catalog."default",
+    debit numeric(15,2) DEFAULT 0.00,
+    credit numeric(15,2) DEFAULT 0.00,
+    balance_after numeric(15,2) NOT NULL,
+    channel character varying(50) COLLATE pg_catalog."default",
+    transaction_ref character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT transaction_pkey PRIMARY KEY (id),
+    CONSTRAINT transaction_transaction_ref_key UNIQUE (transaction_ref),
+    CONSTRAINT fk_account FOREIGN KEY (account_id)
+        REFERENCES public.account (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+)
+
+-----------------------------------------
+INSERT INTO transaction
+(account_id, date, description, debit, credit, balance_after, channel, transaction_ref)
+VALUES
+(1, '2026-11-01', 'Salary Payment', 0, 350000, 350000, 'Bank Transfer', 'TXN001'),
+(1, '2026-11-02', 'Electricity Bill', 25000, 0, 325000, 'Mobile Banking', 'TXN002'),
+(2, '2026-11-01', 'Auto-save to OWealth Balance', 150000, 0, 150000, 'Bank Transfer', 'TXN003'),
+(2, '2026-11-02', 'OWealth Withdrawal(Transaction Payment)', 10000, 0, 140000, 'Bank Transfer', 'TXN004'),
+(2, '2026-11-03', 'OWealth Withdrawal(Transaction Payment)',  10000,0, 130000, 'mobile', 'TXN005'),
+(2, '2026-11-04', 'OWealth Withdrawal(Transaction Payment)', 10000, 0, 120000, 'Bank Transfer', 'TXN006'),
+(2, '2026-11-05', 'OWealth Withdrawal(Transaction Payment)', 10000,0, 110000, 'Bank Transfer', 'TXN007'),
+(2, '2026-11-06', 'OWealth Withdrawal(Transaction Payment)', 10000, 0, 100000, 'Bank Transfer', 'TXN008'),
+(3, '2026-11-04', 'ATM Withdrawal', 20000, 0, 80000, 'ATM', 'TXN0042'),
+(4, '2026-11-05', 'POS Purchase', 15000, 0, 185000, 'POS', 'TXN0052');
+
+
+----------------------------------------------------

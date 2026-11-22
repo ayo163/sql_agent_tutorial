@@ -1,0 +1,16 @@
+At database level 
+………………………………………………………………………………
+I used sql_agent_user for mine. You can pick your own variable name
+------------------------------
+CREATE USER sql_agent_user
+WITH PASSWORD 'your_strong_password';
+
+CREATE ROLE sql_agent_user
+WITH LOGIN PASSWORD 'your_strong_password';
+
+GRANT CONNECT ON DATABASE bank_db TO sql_agent_user;
+
+GRANT USAGE ON SCHEMA public TO sql_agent_user;
+
+GRANT SELECT ON TABLE account, transaction
+TO sql_agent_user;
